@@ -15,8 +15,10 @@
    - [4. PCB Design & Electronics](#4-pcb-design--electronics-roadmap)
    - [5. Control & Dynamics](#5-control--dynamics-roadmap)
    - [6. Control Boards & Embedded Firmware](#6-control-boards--embedded-firmware-roadmap)
-4. [Team Policies & Collaboration Instructions](#-team-policies--collaboration-instructions)
-5. [New Member Onboarding Workflow](#-new-member-onboarding-workflow)
+4. [🐍 Python Development Guidelines (Quick Reference)](#-python-development-guidelines-quick-reference)
+5. [✍️ Conventional Commit Guidelines (Quick Reference)](#️-conventional-commit-guidelines-quick-reference)
+6. [📜 Team Policies & Detailed Instruction Manuals](#-team-policies--detailed-instruction-manuals)
+7. [🚀 New Member Onboarding Workflow](#-new-member-onboarding-workflow)
 
 ---
 
@@ -35,8 +37,8 @@ The development of high-performance quadcopters requires tight cross-functional 
 - **Hardware/Tools:** NVIDIA Jetson Orin / Nano, OpenCV, PyTorch, TensorRT, depth cameras (Intel RealSense), edge accelerators.
 
 ### 2. 💻 Software & Autonomy
-- **Focus:** System architecture, ROS 2 middleware, autonomous mission planning, behavior trees, MAVLink telemetry streaming, Ground Control Station (GCS) software, and SITL simulation.
-- **Hardware/Tools:** ROS 2 (Humble/Iron), Modern C++ (C++17/C++20), Python, Gazebo Sim, PX4 SITL, QGroundControl.
+- **Focus:** System architecture, telemetry streaming, autonomous mission planning, behavior trees, Ground Control Station (GCS) software, and SITL simulation.
+- **Hardware/Tools:** Modern C++ (C++17/C++20), Python, Gazebo Sim, PX4 SITL, QGroundControl.
 
 ### 3. 🛠️ Hardware & Mechanical
 - **Focus:** Airframe structural design, aerodynamics, thrust-to-weight optimization, motor/propeller matching, CAD modeling, vibration dampening, and advanced fabrication (carbon fiber CNC machining and 3D printing).
@@ -74,9 +76,9 @@ To ensure that both new and current team members develop deep domain competence,
 - **C++ & Systems Programming:**
   - *Modern C++ for Robotics (C++17/C++20)* – The Construct
   - *Effective Modern C++* – Scott Meyers
-- **Robotics Middleware & Simulation:**
-  - *ROS 2 Basics & Navigation (Nav2)* – The Construct / ROS 2 Official Tutorials
+- **Simulation & Architecture:**
   - *Gazebo Sim Simulation & PX4 SITL Integration*
+  - *Clean Architecture & Concurrency in Robotics*
   - *MAVLink & MAVSDK Development Guide*
 
 ### 3. Hardware & Mechanical Roadmap
@@ -115,7 +117,67 @@ To ensure that both new and current team members develop deep domain competence,
 
 ---
 
-## 📜 Team Policies & Collaboration Instructions
+## 🐍 Python Development Guidelines (Quick Reference)
+
+All Python codebases in Xerox UAV adhere to modern standards powered by Astral's high-speed toolchain:
+
+- **Package & Environment Management:** Use **`uv`** (10x–100x faster than classic pip/virtualenv, with cross-platform deterministic `uv.lock`).
+- **Formatting & Linting:** Use **`ruff`** for instant linting and auto-formatting (replaces `black`, `flake8`, and `isort`).
+- **Strict Typing:** All functions must include complete type annotations verified by **`ty`** or **`mypy`**.
+- **Domain Modeling:** Raw unstructured dictionaries (`{"x": 1}`) are forbidden. Use memory-efficient **`@dataclass(frozen=True)`** for internal loops and **Pydantic V2** for telemetry validation.
+- **Real-Time Safety:** Never block the main event loop with `time.sleep()`. Offload heavy image or tensor processing into isolated worker processes.
+
+```bash
+# Common Developer Commands:
+uv init <project-name>           # Initialize project
+uv add <package>                 # Add dependency
+uv add --dev ruff ty pytest      # Add development tools
+uv run ruff format .             # Auto-format codebase
+uv run ruff check . --fix        # Run linter and auto-fix
+uv run ty .                      # Run static type checker
+uv run pytest tests/             # Run unit tests
+```
+
+👉 *For the comprehensive guide, learning curriculum, and video links, see:*  
+[**`instructions&collaboration/PYTHON_DEVELOPMENT.md`**](instructions&collaboration/PYTHON_DEVELOPMENT.md)
+
+---
+
+## ✍️ Conventional Commit Guidelines (Quick Reference)
+
+To maintain a clean, readable, and automated Git history, every commit must follow the **[Conventional Commits](https://www.conventionalcommits.org/)** format:
+
+```text
+<type>(<scope>): <short summary in imperative mood>
+
+[optional body explaining WHY this change was made and technical trade-offs]
+
+[optional footer: e.g., Closes #24]
+```
+
+### Commit Types
+| Type | Description | Example |
+| :--- | :--- | :--- |
+| **`feat`** | A new feature or capability | `feat(vision): add stereo depth obstacle detector` |
+| **`fix`** | A bug fix | `fix(control): resolve yaw rate integral windup` |
+| **`refactor`** | Code reorganization with no behavior change | `refactor(telemetry): extract MAVLink message parser` |
+| **`perf`** | Performance improvement | `perf(inference): optimize TensorRT CUDA stream memory` |
+| **`test`** | Adding or updating tests | `test(ekf): add unit tests for covariance reset` |
+| **`docs`** | Documentation updates | `docs(readme): add conventional commits instructions` |
+| **`ci`** | CI/CD pipelines & GitHub Actions | `ci(lint): add ruff and ty pre-commit workflows` |
+| **`chore`** | Maintenance, dependencies, or `.gitignore` | `chore(deps): bump pydantic from 2.6 to 2.7` |
+
+### Key Rules:
+1. **Atomic Commits:** One logical change per commit.
+2. **Imperative Mood:** Use `"add filter"`, NOT `"added filter"` or `"adds filter"`.
+3. **Never Push to `main`:** Always create a feature branch (`feat/...`, `fix/...`) and open a Pull Request.
+
+👉 *For branching strategies, rebase conflict resolution, and PR guidelines, see:*  
+[**`instructions&collaboration/GIT_GITHUB_INSTRUCTION.md`**](instructions&collaboration/GIT_GITHUB_INSTRUCTION.md)
+
+---
+
+## 📜 Team Policies & Detailed Instruction Manuals
 
 > [!IMPORTANT]
 > ### ⚠️ Mandatory Policy Adherence
@@ -130,7 +192,7 @@ Detailed, domain-specific instruction manuals are maintained in the [`instructio
 | [**`GIT_GITHUB_INSTRUCTION.md`**](instructions&collaboration/GIT_GITHUB_INSTRUCTION.md) | Universal Git standards, Conventional Commits, branch naming, PR lifecycles, and rebase conflict resolution. | **All Team Members** |
 | [**`PYTHON_DEVELOPMENT.md`**](instructions&collaboration/PYTHON_DEVELOPMENT.md) | Modern Astral toolchain (`uv`, `ruff`, `ty`), strict typing, frozen dataclasses & Pydantic, and real-time practices. | AI, Software, Tooling |
 | [**`PCB_DESIGN.md`**](instructions&collaboration/PCB_DESIGN.md) | KiCad rules, high-current routing, TVS & reverse-polarity protection, noise isolation, DRC/ERC, and bench bring-up safety checklists. | PCB Design, Electronics |
-| [**`AI_DEVELOPMENT.md`**](instructions&collaboration/AI_DEVELOPMENT.md) | Real-time latency budgets (FPS/ms), TensorRT export, DVC data versioning, fail-safe fallbacks, and "Never Fly Blind" policy. | AI & Perception |
+| [**`AI_DEVELOPMENT.md`**](instructions&collaboration/AI_DEVELOPMENT.md) | Dual-stage workflow (.pt prototyping vs ONNX/TensorRT edge), latency budgets (FPS/ms), DVC datasets, and "Never Fly Blind" policy. | AI & Perception |
 | [**`SOFTWARE_DEVELOPMENT.md`**](instructions&collaboration/SOFTWARE_DEVELOPMENT.md) | Concurrency (Async vs Sync), Design Patterns (Factory/Strategy), Clean Architecture (Hexagonal), and 6-step safety ladder. | Software, Systems |
 
 ---
@@ -151,7 +213,7 @@ flowchart TD
 
 1. **Select Your Primary Role:** Choose from AI, Software, Hardware, PCB Design, Control, or Control Boards.
 2. **Study the Fundamentals:** Work through the recommended courses listed above.
-3. **Environment Setup:** Configure your workstation with the required tools (Ubuntu 22.04 LTS, ROS 2, KiCad, or CAD suites).
+3. **Environment Setup:** Configure your workstation with the required tools (Ubuntu 22.04 LTS, Python 3.10+, KiCad, or CAD suites).
 4. **Read All Policies:** Thoroughly study the relevant documentation in [`instructions&collaboration/`](instructions&collaboration/).
 5. **Contribute:** Pick a `good first issue` from our repository issue trackers, follow our branching and PR checklist, and submit your first Pull Request.
 6. **Safety First:** Always remember: **Propellers remain OFF on all bench tests.**
