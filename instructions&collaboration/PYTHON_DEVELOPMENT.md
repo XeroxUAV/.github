@@ -15,7 +15,6 @@
 3. [Toolchain Usage & Commands](#-toolchain-usage--commands)
 4. [UAV & Robotics Real-Time Best Practices](#-uav--robotics-real-time-best-practices)
 5. [Testing & Quality Assurance](#-testing--quality-assurance)
-6. [Pull Request (PR) Checklist](#-pull-request-pr-checklist)
 
 ---
 
@@ -218,16 +217,4 @@ select = [
       assert not mock_drone.is_armed()
   ```
 - **Coverage Goal:** At least 80% branch coverage on core logic, mission state machines, and calculations.
-
----
-
-## ✅ Pull Request (PR) Checklist
-
-Before submitting a PR for any Python repository in Xerox UAV:
-- [ ] Project and dependencies managed with `uv`.
-- [ ] Code formatted with `uv run ruff format .`.
-- [ ] All linting checks pass with zero warnings (`uv run ruff check .`).
-- [ ] Static type checker passes cleanly (`uv run ty .` or `uv run mypy .`).
-- [ ] Dataclasses / Pydantic models used instead of raw unstructured dictionaries.
-- [ ] All unit tests pass (`uv run pytest tests/`).
-- [ ] Google-style docstrings provided for all new functions and public APIs.
+- **Git & GitHub Guidelines:** For commit standards, PR requirements, and team collaboration workflows, refer directly to [`GIT_GITHUB_INSTRUCTION.md`](GIT_GITHUB_INSTRUCTION.md).

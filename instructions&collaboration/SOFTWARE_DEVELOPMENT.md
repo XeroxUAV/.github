@@ -12,11 +12,9 @@
 2. [Why Modern Architecture? Benefits Over Classic & Anti-Pattern Ways](#-why-modern-architecture-benefits-over-classic--anti-pattern-ways)
    - [1. Modern Concurrency vs. Classic Blocking Execution](#1-modern-concurrency-vs-classic-blocking-execution)
    - [2. Design Patterns vs. Spaghetti Conditionals & Hardcoded Logic](#2-design-patterns-vs-spaghetti-conditionals--hardcoded-logic)
-   - [3. Clean Architecture (Hexagonal) vs. Monolithic Script Spaghetti](#3-clean-architecture-hexagonal-vs-monolithic-script-spaghetti)
-3. [Technology Stack & ROS 2 Architecture](#-technology-stack--ros-2-architecture)
-4. [C++ Real-Time & Systems Guidelines](#-c-real-time--systems-guidelines)
-5. [Verification Hierarchy: The 6-Step Safety Ladder](#-verification-hierarchy-the-6-step-safety-ladder)
-6. [Git & Collaboration Workflow](#-git--collaboration-workflow)
+3. [C++ Real-Time & Systems Guidelines](#-c-real-time--systems-guidelines)
+4. [Verification Hierarchy: The 6-Step Safety Ladder](#-verification-hierarchy-the-6-step-safety-ladder)
+5. [Git & Collaboration Standards](#-git--collaboration-standards)
 
 ---
 
@@ -149,16 +147,16 @@ In mission-critical UAV systems, poor software design directly causes dropped te
 ### 3. Clean Architecture (Hexagonal) vs. Monolithic Script Spaghetti
 
 #### ❌ The Classic Anti-Pattern:
-- Mixing ROS 2 node publishers, OpenCV image capture, business decisions, and file logging inside a single 800-line monolithic script.
-- **The Failure:** You cannot test whether your obstacle avoidance logic works without starting ROS 2 daemons, connecting a physical camera, and spawning Gazebo. Unit testing is impossible.
+- Mixing telemetry publishers, camera capture, business logic, and file logging inside a single monolithic script.
+- **The Failure:** You cannot test whether your obstacle avoidance logic works without starting system daemons, connecting a physical camera, and running heavy simulations. Unit testing is impossible.
 
 #### ✅ Modern Standard (Clean / Hexagonal Architecture):
 We split our software into four distinct, isolated layers:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
-│ 1. PRESENTATION LAYER (Delivery)                            │
-│    ROS 2 Nodes, CLI commands, Ground Station REST APIs      │
+│ 1. PRESENTATION LAYER (Delivery & User Interfaces)          │
+│    Telemetry streams, CLI commands, Ground Station REST/WS  │
 ├─────────────────────────────────────────────────────────────┤
 │ 2. APPLICATION LAYER (Use Cases & Orchestration)            │
 │    Mission Supervisors, Trajectory Generators, State Machine│
@@ -167,31 +165,14 @@ We split our software into four distinct, isolated layers:
 │    Kinematic calculations, Waypoints, Obstacle geometry     │
 ├─────────────────────────────────────────────────────────────┤
 │ 4. INFRASTRUCTURE LAYER (Hardware & Adapters)               │
-│    RealSense camera drivers, Jetson TensorRT, SQLite logs   │
+│    Sensors & camera drivers, Edge inference, File/Log storage│
 └─────────────────────────────────────────────────────────────┘
 ```
 
-- **The Core Rule:** Dependencies point inward. The `Domain` layer contains pure Python / C++ with ZERO dependencies on ROS 2, PyTorch, or OpenCV.
+- **The Core Rule:** Dependencies point inward. The `Domain` layer contains pure algorithms with ZERO dependencies on third-party frameworks, communication protocols, or hardware drivers.
 - **Benefits:**
-  1. **Blazing-Fast Unit Tests:** Domain mission algorithms can be tested in **3 milliseconds** with `pytest` without ROS 2 or hardware running.
-  2. **Extreme Portability:** If the team switches from ROS 2 to Zenoh or PX4 Micro-DDS in the future, 90% of our domain and mission logic remains untouched—we only swap the presentation adapter!
-
----
-
-## 🛠️ Technology Stack & ROS 2 Architecture
-
-### Core Middleware & Languages
-- **ROS 2:** Standardized on **ROS 2 Humble Hawksbill** (LTS) / **Iron Irwini**.
-- **C++:** Modern C++ (C++17 or C++20). Adhere to the **Google C++ Style Guide**.
-- **Python:** Python 3.10+, complying with the modern toolchain in [`PYTHON_DEVELOPMENT.md`](PYTHON_DEVELOPMENT.md).
-- **Build System:** `colcon` with `ament_cmake` (C++) and `ament_python` (Python).
-
-### ROS 2 Architectural Rules
-1. **Node Lifecycle:** Use `rclcpp_lifecycle` (Lifecycle Nodes) for mission-critical nodes to ensure deterministic state transitions (`configure`, `activate`, `deactivate`, `cleanup`).
-2. **Quality of Service (QoS) Profiles:**
-   - **High-rate sensor streams (IMU, Odometry, Camera at >30 Hz):** Use **Best Effort** reliability and **Volatile** durability to minimize latency.
-   - **Critical commands & state transitions (Arm, Disarm, Mode Switch, Waypoint):** Use **Reliable** reliability and **Transient Local** durability.
-3. **Execution & Spinners:** Avoid single-threaded spinners if a node handles both high-frequency sensor callbacks and heavy computation. Use `MultiThreadedExecutor` with isolated callback groups (`MutuallyExclusiveCallbackGroup`).
+  1. **Blazing-Fast Unit Tests:** Domain mission algorithms can be tested in **3 milliseconds** with unit tests without physical hardware or background daemons running.
+  2. **Extreme Portability:** If the team migrates communication protocols or hardware drivers in the future, 90% of our domain and mission logic remains untouched—we only swap the presentation or infrastructure adapter!
 
 ---
 
@@ -233,29 +214,6 @@ Every code change must climb the verification ladder step-by-step. Skipping step
 
 ---
 
-## 🤝 Git & Collaboration Workflow
+## 🤝 Git & Collaboration Standards
 
-### Branching Strategy
-- `master` / `main`: Production-ready, flight-tested code only.
-- `develop`: Integration branch for tested features.
-- `feature/<feature-name>`: Working branch for individual features.
-- `fix/<bug-name>`: Bug fixes for reported issues.
-
-### Conventional Commit Messages
-Format all commit messages strictly:
-```text
-<type>(<scope>): <short description>
-
-[optional body explaining why this change was made]
-```
-- `feat`: A new feature or capability
-- `fix`: A bug fix
-- `refactor`: Code reorganization with no behavior change
-- `test`: Adding or updating tests
-- `docs`: Documentation updates
-- `ci`: CI/CD pipeline modifications
-
-### Code Review & Pull Request Requirements
-- Every PR requires at least **one approved review** from a sub-team lead.
-- PRs must link to an open Issue tracking the requirement.
-- Author must provide Gazebo/SITL test logs or video screen recordings demonstrating successful behavior before physical bench authorization.
+For all team Git branching strategies, conventional commit formats, PR reviews, and GitHub collaboration guidelines, refer directly to [`GIT_GITHUB_INSTRUCTION.md`](GIT_GITHUB_INSTRUCTION.md).

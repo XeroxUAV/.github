@@ -127,10 +127,11 @@ Detailed, domain-specific instruction manuals are maintained in the [`instructio
 
 | Guide | Description | Target Sub-Teams |
 | :--- | :--- | :--- |
-| [**`PYTHON_DEVELOPMENT.md`**](instructions&collaboration/PYTHON_DEVELOPMENT.md) | PEP 8, Ruff/Black formatters, strict typing with Mypy, real-time safety, non-blocking loops, and Pytest standards. | AI, Software, Tooling |
+| [**`GIT_GITHUB_INSTRUCTION.md`**](instructions&collaboration/GIT_GITHUB_INSTRUCTION.md) | Universal Git standards, Conventional Commits, branch naming, PR lifecycles, and rebase conflict resolution. | **All Team Members** |
+| [**`PYTHON_DEVELOPMENT.md`**](instructions&collaboration/PYTHON_DEVELOPMENT.md) | Modern Astral toolchain (`uv`, `ruff`, `ty`), strict typing, frozen dataclasses & Pydantic, and real-time practices. | AI, Software, Tooling |
 | [**`PCB_DESIGN.md`**](instructions&collaboration/PCB_DESIGN.md) | KiCad rules, high-current routing, TVS & reverse-polarity protection, noise isolation, DRC/ERC, and bench bring-up safety checklists. | PCB Design, Electronics |
 | [**`AI_DEVELOPMENT.md`**](instructions&collaboration/AI_DEVELOPMENT.md) | Real-time latency budgets (FPS/ms), TensorRT export, DVC data versioning, fail-safe fallbacks, and "Never Fly Blind" policy. | AI & Perception |
-| [**`SOFTWARE_DEVELOPMENT.md`**](instructions&collaboration/SOFTWARE_DEVELOPMENT.md) | ROS 2 QoS design, Modern C++ guidelines, zero allocations in control loops, 6-step safety verification ladder, and GitFlow rules. | Software, Systems |
+| [**`SOFTWARE_DEVELOPMENT.md`**](instructions&collaboration/SOFTWARE_DEVELOPMENT.md) | Concurrency (Async vs Sync), Design Patterns (Factory/Strategy), Clean Architecture (Hexagonal), and 6-step safety ladder. | Software, Systems |
 
 ---
 

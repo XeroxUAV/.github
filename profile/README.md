@@ -29,6 +29,7 @@ Xerox UAV brings together robotics engineers across artificial intelligence, emb
 Looking to join or collaborate with Xerox UAV?
 - 📖 **Complete Learning Roadmaps & Courses:** Visit our comprehensive [Root Repository README](../README.md#recommended-courses--learning-roadmaps) to view recommended courses for every role.
 - 📋 **Collaboration Policies & Coding Standards:** Every member is required to adhere to our team development rules in [`instructions&collaboration/`](../instructions&collaboration/):
+  - [🐙 Git & GitHub Collaboration Guidelines](../instructions&collaboration/GIT_GITHUB_INSTRUCTION.md)
   - [🐍 Python Development Guidelines](../instructions&collaboration/PYTHON_DEVELOPMENT.md)
   - [⚡ PCB Design & Hardware Guidelines](../instructions&collaboration/PCB_DESIGN.md)
   - [🧠 AI & Perception Guidelines](../instructions&collaboration/AI_DEVELOPMENT.md)
